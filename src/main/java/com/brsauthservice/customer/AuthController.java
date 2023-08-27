@@ -33,9 +33,9 @@ public class AuthController {
 
     @PostMapping("/customers/login")
     public ResponseEntity<AuthResponse> loginCustomer(@RequestBody AuthRequest authRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-           return  ResponseEntity.ok().body(new AuthResponse(RequestStatus.SUCCESS,service.generateToken(authRequest.getUsername())));
+           return  ResponseEntity.ok().body(new AuthResponse(RequestStatus.SUCCESS,service.generateToken(authRequest.getUserName())));
         } else {
             throw new BRSAuthException("Invalid credentials");
         }

@@ -21,7 +21,7 @@ public class JwtService {
 
 
     @Value("${jwt.secret}")
-    private static String SECRET;
+    private String SECRET;
 
 
     public void validateToken(final String token) {
