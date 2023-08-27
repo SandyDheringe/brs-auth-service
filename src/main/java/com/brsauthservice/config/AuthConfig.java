@@ -24,16 +24,11 @@ public class AuthConfig {
         userDetailsService = customUserDetailsService;
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//        return new CustomUserDetailsService();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
+                .antMatchers("/api/v1/customers/register", "/api/v1/customers/login", "/api/v1/customers/validate").permitAll()
                 .and()
                 .build();
     }

@@ -1,8 +1,12 @@
 package com.brsauthservice.customer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.brsauthservice.exception.BRSFieldException;
+import com.brsauthservice.util.BRSResponse;
+import com.brsauthservice.util.RequestStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -18,10 +22,14 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public String saveUser(Customer credential) {
-        credential.setPassword(passwordEncoder.encode(credential.getPassword()));
-        repository.save(credential);
-        return "user added to the system";
+    public BRSResponse registerCustomer(Customer customer) {
+        Optional<Customer> oldCustomer = repository.findByUserName(customer.getUserName());
+        if (oldCustomer.isPresent())
+            throw new BRSFieldException("username already taken");
+
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        repository.save(customer);
+        return new BRSResponse(RequestStatus.SUCCESS, "Registration successful");
     }
 
     public String generateToken(String username) {
@@ -31,6 +39,5 @@ public class AuthService {
     public void validateToken(String token) {
         jwtService.validateToken(token);
     }
-
 
 }

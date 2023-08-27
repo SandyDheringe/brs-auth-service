@@ -1,7 +1,12 @@
 package com.brsauthservice.customer;
 
 import com.brsauthservice.auth.AuthRequest;
+import com.brsauthservice.auth.AuthResponse;
+import com.brsauthservice.exception.BRSAuthException;
+import com.brsauthservice.util.BRSResponse;
+import com.brsauthservice.util.RequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,24 +26,24 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/register")
-    public String addNewUser(@RequestBody Customer user) {
-        return service.saveUser(user);
+    @PostMapping("/customers/register")
+    public ResponseEntity<BRSResponse> registerCustomer(@RequestBody Customer customer) {
+        return ResponseEntity.ok().body(service.registerCustomer(customer));
     }
 
-    @PostMapping("/token")
-    public String getToken(@RequestBody AuthRequest authRequest) {
+    @PostMapping("/customers/login")
+    public ResponseEntity<AuthResponse> loginCustomer(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-            return service.generateToken(authRequest.getUsername());
+           return  ResponseEntity.ok().body(new AuthResponse(RequestStatus.SUCCESS,service.generateToken(authRequest.getUsername())));
         } else {
-            throw new RuntimeException("invalid access");
+            throw new BRSAuthException("Invalid credentials");
         }
     }
 
-    @GetMapping("/validate")
-    public String validateToken(@RequestParam("token") String token) {
+    @GetMapping("/customers/validate")
+    public ResponseEntity validateToken(@RequestParam("token") String token) {
         service.validateToken(token);
-        return "Token is valid";
+        return ResponseEntity.ok().build();
     }
 }
