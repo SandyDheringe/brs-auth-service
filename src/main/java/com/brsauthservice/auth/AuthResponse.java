@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     private RequestStatus status;
     private String token;
+    private Integer customerId;
 }

@@ -19,11 +19,13 @@ public class AuthController {
     private final AuthService service;
 
     private final AuthenticationManager authenticationManager;
-
+    private final CustomerRepository customerRepository;
     @Autowired
-    AuthController(AuthService service, AuthenticationManager authenticationManager) {
+    AuthController(AuthService service, AuthenticationManager authenticationManager,
+                   CustomerRepository customerRepository) {
         this.service = service;
         this.authenticationManager = authenticationManager;
+        this.customerRepository = customerRepository;
     }
 
     @PostMapping("/customers/register")
@@ -35,7 +37,8 @@ public class AuthController {
     public ResponseEntity<AuthResponse> loginCustomer(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-           return  ResponseEntity.ok().body(new AuthResponse(RequestStatus.SUCCESS,service.generateToken(authRequest.getUserName())));
+            Customer customer = customerRepository.findByUserName(authRequest.getUserName()).orElse(null);
+           return  ResponseEntity.ok().body(new AuthResponse(RequestStatus.SUCCESS,service.generateToken(authRequest.getUserName()),customer.getId()));
         } else {
             throw new BRSAuthException("Invalid credentials");
         }
