@@ -1,0 +1,7 @@
+
+spring:
+  application:
+    name: brs-auth-service
+
+  config:
+    import: configserver:http://config-server:8071
