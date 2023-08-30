@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.brsauthservice</groupId>
     <artifactId>brs-auth-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>brs-auth-service</name>
     <description>brs-auth-service</description>
     <properties>
