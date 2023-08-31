@@ -13,7 +13,7 @@ public class BrsAuthServiceApplication {
 //        SpringApplication.run(BrsAuthServiceApplication.class, args);
 
         new SpringApplicationBuilder()
-                .profiles("dev")
+                .profiles("prod")
                 .sources(BrsAuthServiceApplication.class)
                 .run(args);
     }
